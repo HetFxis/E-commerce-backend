@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser,Product,Category,Cart,Order
+from .models import CustomUser,Product,Category,Cart,Order,ProductImage
 from django.contrib.auth.hashers import make_password
 from .models import CustomUser
 from django.contrib.auth import get_user_model
@@ -32,15 +32,17 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['id', 'name', 'description', 'created_at', 'updated_at']
 
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ['image']
 class ProductSerializer(serializers.ModelSerializer):
+    images = ProductImageSerializer(many=True, read_only=True)  # Add this line
     class Meta:
         model = Product
         fields ='__all__'
 
-# class CartitemSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Cartitem
-#         fields = ['id', 'Cart', 'Product', 'created_at', 'updated_at']
+
 
 
 class CartSerializer(serializers.ModelSerializer):

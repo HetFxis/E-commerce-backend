@@ -57,7 +57,12 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True) 
     def __str__(self):
         return self.name
-    
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(upload_to='images')
+
+    def __str__(self):
+        return f"Image for {self.product.name}"
 class Cart(models.Model):  
     user=models.ForeignKey(CustomUser, related_name="cart", on_delete=models.CASCADE, null=True, blank=True)   
     product=models.ForeignKey(Product, related_name="product_cart", on_delete=models.CASCADE, null=True, blank=True) 

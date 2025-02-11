@@ -1,7 +1,7 @@
 from django.contrib import admin
 # from django.contrib.auth.models import User, Group
 
-from .models import CustomUser,Product,Category,Cart,Order
+from .models import CustomUser,Product,Category,Cart,Order,ProductImage
 # admin.site.register(User)
 # admin.site.register(Group)
 @admin.register(CustomUser)
@@ -10,6 +10,9 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class product(admin.ModelAdmin):
     list_display=['name','description','sizes','image','stock','Category','brand','price','review']
+@admin.register(ProductImage)
+class productimage(admin.ModelAdmin):
+    list_display=['image']
 @admin.register(Category)
 class category(admin.ModelAdmin):
     list_display=['id','name','description']
