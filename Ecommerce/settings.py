@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'app',
+    'payment',
      'rest_framework_simplejwt',
      'corsheaders',
 ]
@@ -58,7 +59,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -84,12 +85,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 ROOT_URLCONF = 'Ecommerce.urls'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',  # For token-based auth
         'rest_framework_simplejwt.authentication.JWTAuthentication',  # For JWT auth
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',  # Require authentication by default
-    ),
+    )
 }
 
 TEMPLATES = [
@@ -164,3 +161,5 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'app.CustomUser'
+RAZORPAY_KEY_ID = "rzp_test_nfowtGrr7Vfvrb"
+RAZORPAY_KEY_SECRET = "WHUhXg8WuzrYjl3X7xS2WaNp"

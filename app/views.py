@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import CustomUser, Category, Product,Cart,Order
+from .models import CustomUser, Category, Product,Cart,checkout
 from .serializer import UserSerializer, LoginSerializer, CategorySerializer, ProductSerializer,CartSerializer,OrderSerializer
 
 from django.shortcuts import get_object_or_404
@@ -110,53 +110,99 @@ class CartView(APIView):
         cart_item.delete()
         return Response({"message": "Product removed from cart"})
 class OrderView(generics.ListCreateAPIView):
-    queryset = Order.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = OrderSerializer
-    def post(self, request, *args, **kwargs):
-        user = request.user
-        cart = Cart.objects.filter(user=user).first()
-        if not cart:
-            return Response({"error": "Cart is empty."}, status=status.HTTP_400_BAD_REQUEST)
- 
-        data = request.data
-        full_name = data.get("full_name")
-        email = data.get("email")
-        address = data.get("address")
-        city = data.get("city")
-        state = data.get("state")
-        zip_code = data.get("zip_code")
+    queryset = checkout.objects.all()
+    permission_classes=[permissions.IsAuthenticated]
+    def get(self, request):
+        """Fetch all orders of the authenticated user"""
+        
+        orders = checkout.objects.filter(user=request.user)
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data)
 
-        if not all([full_name, email, address, city, state, zip_code]):
+    def post(self, request, *args, **kwargs):
+       
+        # Get the user's cart
+        cart_items = Cart.objects.filter(user=request.user)
+        print(cart_items)
+        if not cart_items.exists():
+            return Response({"error": "Cart is empty."}, status=status.HTTP_400_BAD_REQUEST)
+
+        data = request.data
+        required_fields = ["full_name", "email", "address", "city", "state", "zip_code"]
+
+        if not all(data.get(field) for field in required_fields):
             return Response({"error": "All fields are required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Create the order
-        order = Order.objects.create(
-            user=user,
-            cart=cart,
-            full_name=full_name,
-            email=email,
-            address=address,
-            city=city,
-            state=state,
-            zip_code=zip_code,
+        # Calculate total price
+        total_price = sum(item.total for item in cart_items)
+
+        # Create order
+        order =checkout.objects.create(
+            user=request.user,
+            full_name=data["full_name"],
+            email=data["email"],
+            address=data["address"],
+            city=data["city"],
+            state=data["state"],
+            zip_code=data["zip_code"],
+            total_amount=total_price,  # Assuming you have a total_amount field
         )
+
+        # Optionally: Move items from cart to order items
+        for item in cart_items:
+            order.items.add(item)
+
+        # Clear the cart after order is placed
+        cart_items.delete()
 
         return Response(OrderSerializer(order).data, status=status.HTTP_201_CREATED)
 
-class UserOrdersView(generics.ListAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-    permission_classes = [permissions.AllowAny] 
-    # permission_classes = [permissions.IsAuthenticated]  
-    # def get_object(self):
-    #     user_id = self.kwargs.get('id', None)
-    #     if user_id:
-    #         return Order.objects.get(id=user_id) 
-    #     else:
-    #         return self.request.user
-    
-    def get(self, request):
-        orders = Order.objects.filter(user=request.user)
-        serializer = OrderSerializer(orders, many=True)
-        return Response(serializer.data)
+import razorpay
+from django.conf import settings
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .models import checkout
+from .serializer import OrderSerializer
+from rest_framework.permissions import IsAuthenticated
+
+class CreateRazorpayOrder(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        amount = request.data.get("amount")  # Amount in Rupees
+        amount_paise = int(amount) * 100  # Convert to Paisa
+
+        if amount_paise <= 0:
+            return Response({"error": "Invalid amount"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Initialize Razorpay Client
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+        # Create order in Razorpay
+        razorpay_order = client.order.create(
+            {
+                "amount": amount_paise,  # Razorpay takes amount in Paisa
+                "currency": "INR",
+                "payment_capture": 1,  # Auto capture payment
+            }
+        )
+
+        # Save order in DB
+        order = Order.objects.create(
+            user=user,
+            razorpay_order_id=razorpay_order["id"],
+            amount=amount,
+            status="Pending"
+        )
+
+        return Response(
+            {
+                "order_id": razorpay_order["id"],
+                "amount": razorpay_order["amount"],
+                "currency": razorpay_order["currency"],
+                "key": settings.RAZORPAY_KEY_ID,
+            },
+            status=status.HTTP_201_CREATED
+        )

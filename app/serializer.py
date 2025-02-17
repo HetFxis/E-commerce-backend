@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser,Product,Category,Cart,Order,ProductImage
+from .models import CustomUser,Product,Category,Cart,checkout,ProductImage
 from django.contrib.auth.hashers import make_password
 from .models import CustomUser
 from django.contrib.auth import get_user_model
@@ -63,7 +63,7 @@ class OrderSerializer(serializers.ModelSerializer):
     product_id = serializers.IntegerField(source='product.id', read_only=True)
     
     class Meta:
-        model = Order
+        model = checkout
         fields = ['id', 'user', 'product_name', 'product_id', 'product_price']
         read_only_fields = ['user']
         

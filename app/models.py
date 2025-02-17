@@ -81,7 +81,7 @@ class Cart(models.Model):
 #     updated_at = models.DateTimeField(auto_now=True) 
 #     def __str__(self):
 #         return self.name
-class Order(models.Model):
+class checkout(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="orders")
     cart=models.ForeignKey(Cart,on_delete=models.CASCADE,related_name="order_cart")
     total_price=models.DecimalField(default=Decimal('0.00'),max_digits=10,decimal_places=2)
