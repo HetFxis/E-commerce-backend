@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import CustomUser, Category, Product,Cart,checkout
+from payment.models import Order
 from .serializer import UserSerializer, LoginSerializer, CategorySerializer, ProductSerializer,CartSerializer,OrderSerializer
 
 from django.shortcuts import get_object_or_404
