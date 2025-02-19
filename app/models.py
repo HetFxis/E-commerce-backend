@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from decimal import Decimal
-
+from django.utils.timezone import now
 
 
 # Create your models here.
@@ -27,6 +27,13 @@ class CustomUser(AbstractUser):
         return self.username
 
   
+class OTP(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    otp_code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        return (now() - self.created_at).seconds < 300  
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)  
     description = models.TextField(null=True, blank=True) 
@@ -51,8 +58,6 @@ class Product(models.Model):
     review = models.DecimalField(
         max_digits=3, decimal_places=2, null=True, blank=True
     ) 
-    
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True) 
     def __str__(self):
@@ -74,13 +79,7 @@ class Cart(models.Model):
     def __str__(self):
         return f"User: {self.user}, items in cart {self.number_of_items}"
 
-# class Cartitem(models.Model):
-#     Cart=models.ForeignKey(Cart,on_delete=models.Case)
-#     Product = models.ForeignKey(Product,on_delete=models.CASCADE)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True) 
-#     def __str__(self):
-#         return self.name
+
 class checkout(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="orders")
     cart=models.ForeignKey(Cart,on_delete=models.CASCADE,related_name="order_cart")

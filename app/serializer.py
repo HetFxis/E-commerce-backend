@@ -15,10 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
             'id': {'read_only': True}
         }
 
-    def create(self, validated_data):
-        validated_data['password'] = make_password(validated_data['password'])
-        return super().create(validated_data)
-
+  
     def update(self, instance, validated_data):
         if 'password' in validated_data:
             validated_data['password'] = make_password(validated_data['password'])
@@ -37,7 +34,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
         model = ProductImage
         fields = ['image']
 class ProductSerializer(serializers.ModelSerializer):
-    images = ProductImageSerializer(many=True, read_only=True)  # Add this line
+    images = ProductImageSerializer(many=True, read_only=True)  
     class Meta:
         model = Product
         fields ='__all__'

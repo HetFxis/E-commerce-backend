@@ -15,7 +15,7 @@ class CreateOrderView(APIView):
     def post(self, request):
         try:
             # data = request.data
-            amount = request.data.get("amount")  # Amount in paise (₹500 = 50000)
+            amount = request.data.get("amount")*100  # Amount in paise (₹500 = 50000)
             if not amount:
                 return Response({"error": "Amount is required"}, status=status.HTTP_400_BAD_REQUEST)
 
