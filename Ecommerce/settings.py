@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=50),
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=40),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
         # 'AUTH_HEADER_TYPES': ('Bearer',),
 
@@ -165,5 +165,5 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'app.CustomUser'
-RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID')
-RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET')
+RAZORPAY_KEY_ID='rzp_test_GW0LY6ewxa4K0W'
+RAZORPAY_KEY_SECRET='MMPXPriydTDb317zOREGUSYK'

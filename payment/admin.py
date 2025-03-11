@@ -1,9 +1,7 @@
 from django.contrib import admin
-from .models import payorder,Order
-@admin.register(payorder)
-class pay(admin.ModelAdmin):
-    list_display=['id','amount']
+from .models import Order
+
 @admin.register(Order)
 class Order(admin.ModelAdmin):
-    list_display=['id','payment_id']
+    list_display=['user','amount','razorpay_order_id']
   

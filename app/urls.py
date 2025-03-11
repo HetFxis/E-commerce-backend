@@ -9,8 +9,7 @@ from .views import (
     ProductDetailView,
     CartView,
     OrderView,
-    SendOTPView,
-    VerifyOTPView
+ 
 )
 # from rest_framework_simplejwt.views import (
 #     TokenObtainPairView,
@@ -24,8 +23,8 @@ urlpatterns = [
     # path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),  # Verify token validity
 
 
-    path("send-otp/", SendOTPView.as_view(), name="send-otp"),
-    path("verify-otp/", VerifyOTPView.as_view(), name="verify-otp"),
+    # path("send-otp/", SendOTPView.as_view(), name="send-otp"),
+    # path("verify-otp/", VerifyOTPView.as_view(), name="verify-otp"),
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
     # path('user/profile/', UserProfileView.as_view(), name='user-profile'),

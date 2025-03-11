@@ -8,7 +8,7 @@ from django.utils.timezone import now
 from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
-    is_customer = models.BooleanField(default=False, help_text="Designates whether the user is a customer.")
+    is_customer = models.BooleanField(default=True, help_text="Designates whether the user is a customer.")
     is_admin = models.BooleanField(default=False, help_text="Designates whether the user is an admin.")
     mobile_number = models.CharField(max_length=12,default=0)
     groups = models.ManyToManyField(
@@ -27,13 +27,7 @@ class CustomUser(AbstractUser):
         return self.username
 
   
-class OTP(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    otp_code = models.CharField(max_length=6)
-    created_at = models.DateTimeField(auto_now_add=True)
 
-    def is_valid(self):
-        return (now() - self.created_at).seconds < 300  
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)  
     description = models.TextField(null=True, blank=True) 
