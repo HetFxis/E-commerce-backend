@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=40),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=40),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
         # 'AUTH_HEADER_TYPES': ('Bearer',),
 

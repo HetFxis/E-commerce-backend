@@ -53,7 +53,7 @@ class CartSerializer(serializers.ModelSerializer):
         model = Cart
         fields = ['id', 'user', 'product_name', 'product_id', 'product_price', 'product_image', 'quantity', 'total', 'created_at', 'updated_at']
         read_only_fields = ['user']
-        
+         
 class OrderSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name', read_only=True)
     product_price = serializers.DecimalField(source='product.price', read_only=True, max_digits=10, decimal_places=2)
@@ -61,6 +61,7 @@ class OrderSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = checkout
-        fields = ['id', 'user', 'product_name', 'product_id', 'product_price']
+        fields = ['id', 'user','cart', 'product_name', 'product_id', 'product_price']
         read_only_fields = ['user']
-        
+        lookup_field = "pk"  # Ensure it looks for 'pk' in URL
+        depth=3
