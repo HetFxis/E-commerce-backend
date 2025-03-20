@@ -9,6 +9,7 @@ router = DefaultRouter()
 urlpatterns = [
     path('',include(router.urls)),
     path('refreshtoken/',RefreshTokenView.as_view(),name='refresh-token'),
-    # path('auth/',include('rest_framework.urls')),
-    # path('RegisterUserAPI/logout/', UserViews.as_view({'get': 'logout'}), name='logout'),
+    path('send-otp/',SendOTPView.as_view(),name='sendotp'),
+    path('verify-otp/',VerifyOTPView.as_view(),name='verifyotp'),
+    
 ]

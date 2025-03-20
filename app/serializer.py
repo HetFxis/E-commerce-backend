@@ -61,6 +61,6 @@ class OrderSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = checkout
-        fields = ['id', 'user', 'product_name', 'product_id', 'product_price']
+        fields = ['id', 'cart','user','total_price','full_name', 'email', 'address','city','state','zip_code',"created_at", 'product_name', 'product_id', 'product_price']
         read_only_fields = ['user']
-        
+        depth=3

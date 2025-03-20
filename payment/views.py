@@ -41,13 +41,13 @@ class CreateOrderView(APIView):
             except Exception as e:
                 return Response({"error": f"Razorpay error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            # Save order in the database
             order = Order.objects.create(
                 user=request.user,
                 amount=amount,
                 razorpay_order_id=razorpay_order.get("id"),
                 status="Pending",
             )
+            
 
             return Response({
                 "order_id": razorpay_order.get("id"),

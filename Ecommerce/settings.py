@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=40),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
         # 'AUTH_HEADER_TYPES': ('Bearer',),
 
@@ -51,8 +51,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'app',
     'payment',
-     'rest_framework_simplejwt',
-     'corsheaders',
+    'rest_framework_simplejwt',
+    'corsheaders',
+    'account',
 ]
 
 MIDDLEWARE = [
@@ -167,3 +168,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'app.CustomUser'
 RAZORPAY_KEY_ID='rzp_test_GW0LY6ewxa4K0W'
 RAZORPAY_KEY_SECRET='MMPXPriydTDb317zOREGUSYK'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Change if using Yahoo, Outlook, etc.
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'testhet01@gmail.com'  
+EMAIL_HOST_PASSWORD = 'fdtc zmic cypi qwsm'# Use App Passwords for security
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

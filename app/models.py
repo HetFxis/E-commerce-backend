@@ -76,7 +76,7 @@ class Cart(models.Model):
 
 class checkout(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="orders")
-    cart=models.ForeignKey(Cart,on_delete=models.CASCADE,related_name="order_cart")
+    cart = models.ManyToManyField(Cart)  # ✅ Correct - Removed `on_delete`
     total_price=models.DecimalField(default=Decimal('0.00'),max_digits=10,decimal_places=2)
     full_name = models.CharField(max_length=255)
     email = models.EmailField()

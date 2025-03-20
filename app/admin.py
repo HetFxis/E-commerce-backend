@@ -19,7 +19,6 @@ class category(admin.ModelAdmin):
 
 @admin.register(Cart)
 class cart(admin.ModelAdmin):
-
     list_display=['id', 'user','product', 'product_id','quantity', 'number_of_items', 'total', 'created_at', 'updated_at', ]
 @admin.register(checkout)
 class OrderAdmin(admin.ModelAdmin):

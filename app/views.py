@@ -4,56 +4,10 @@ from rest_framework.views import APIView
 from django.contrib.auth import authenticate,get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import CustomUser,Category, Product,Cart,checkout
+from account.models import OTP
 from .serializer import UserSerializer, LoginSerializer, CategorySerializer, ProductSerializer,CartSerializer,OrderSerializer
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import get_object_or_404
-# import random
-# from django.utils.timezone import now
-# from django.core.mail import send_mail
-# from datetime import timedelta
-
-# class SendOTPView(APIView):
-#     """Sends an OTP to the user's email for verification"""
-
-#     def post(self, request):
-#         email = request.data.get("email")
-#         if not email:
-#             return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
-
-#         otp_code = str(random.randint(100000, 999999))  
-
-#         otp_obj, created = OTP.objects.update_or_create(
-#         defaults={"otp_code": otp_code},
-#          )
-
-#         send_mail(
-#             "Your OTP Code",
-#             f"Your OTP is {otp_code}. It is valid for 5 minutes.",
-#             "your_email@gmail.com",
-#             [email],
-#             fail_silently=False,
-#         )
-
-#         return Response({"message": "OTP sent successfully!"}, status=status.HTTP_200_OK)
-
-
-# class VerifyOTPView(APIView):
-#     """Verifies the OTP before allowing signup"""
-
-#     def post(self, request):
-#         email = request.data.get("email")
-#         otp_code = request.data.get("otp_code")
-
-#         if not email or not otp_code:
-#             return Response({"error": "Email and OTP are required"}, status=status.HTTP_400_BAD_REQUEST)
-
-#         otp_instance = OTP.objects.filter(user__email=email, otp_code=otp_code).first()
-#         if otp_instance and otp_instance.is_valid():
-#             otp_instance.delete()  # Remove OTP after successful verification
-#             return Response({"message": "OTP verified successfully. You can proceed with registration."}, status=status.HTTP_200_OK)
-
-#         return Response({"error": "Invalid or expired OTP"}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class RegisterView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
@@ -61,19 +15,8 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
-        email = request.data.get("email")
-        otp_code = request.data.get("otp_code")
-
-        # Check OTP validity
-        otp_instance = OTP.objects.filter(user__email=email, otp_code=otp_code).first()
-        if not otp_instance or not otp_instance.is_valid():
-            return Response({"error": "Invalid or expired OTP"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Proceed with user registration
         request.data["password"] = make_password(request.data["password"])
         response = super().create(request, *args, **kwargs)
-
-        otp_instance.delete()  # Remove OTP after successful signup
         return response
 
 
@@ -217,14 +160,11 @@ class OrderView(generics.ListCreateAPIView):
             city=data["city"],
             state=data["state"],
             zip_code=data["zip_code"],
-            total_amount=total_price,  # Assuming you have a total_amount field
+            total_price=total_price,  # Assuming you have a total_amount field
         )
+        order.cart.set(cart_items)  # ✅ Correct way to assign ManyToManyField
 
-        # Optionally: Move items from cart to order items
-        for item in cart_items:
-            order.items.add(item)
-
+      
         # Clear the cart after order is placed
-        cart_items.delete()
-
+        Cart.delete(cart_items)
         return Response(OrderSerializer(order).data, status=status.HTTP_201_CREATED)
