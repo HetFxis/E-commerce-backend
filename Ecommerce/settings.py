@@ -166,12 +166,14 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'app.CustomUser'
-RAZORPAY_KEY_ID='rzp_test_GW0LY6ewxa4K0W'
-RAZORPAY_KEY_SECRET='MMPXPriydTDb317zOREGUSYK'
+
+RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')
+RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', '')
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  # Change if using Yahoo, Outlook, etc.
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'testhet01@gmail.com'  
-EMAIL_HOST_PASSWORD = 'fdtc zmic cypi qwsm'# Use App Passwords for security
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")  # Default to Gmail
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True") == "True"
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

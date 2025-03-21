@@ -164,7 +164,6 @@ class OrderView(generics.ListCreateAPIView):
         )
         order.cart.set(cart_items)  # ✅ Correct way to assign ManyToManyField
 
-      
         # Clear the cart after order is placed
-        Cart.delete(cart_items)
+        # cart_items.delete()
         return Response(OrderSerializer(order).data, status=status.HTTP_201_CREATED)

@@ -51,8 +51,8 @@ class CartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cart
-        fields = ['id', 'user', 'product_name', 'product_id', 'product_price', 'product_image', 'quantity', 'total', 'created_at', 'updated_at']
-        read_only_fields = ['user']
+        fields = ['id', 'product_name', 'product_id', 'product_price', 'product_image', 'quantity', 'total', 'created_at', 'updated_at']
+        # read_only_fields = ['user']
         
 class OrderSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name', read_only=True)
@@ -63,4 +63,4 @@ class OrderSerializer(serializers.ModelSerializer):
         model = checkout
         fields = ['id', 'cart','user','total_price','full_name', 'email', 'address','city','state','zip_code',"created_at", 'product_name', 'product_id', 'product_price']
         read_only_fields = ['user']
-        depth=3
+        depth=2

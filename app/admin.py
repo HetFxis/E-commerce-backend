@@ -6,7 +6,7 @@ from .models import CustomUser,Product,Category,Cart,checkout,ProductImage
 # admin.site.register(Group)
 @admin.register(CustomUser)
 class UserAdmin(admin.ModelAdmin):
-    list_display=['id','username','email','password','mobile_number','is_customer','is_admin']
+    list_display=['id','username',"last_login",'email','password','mobile_number','is_customer','is_admin']
 @admin.register(Product)
 class product(admin.ModelAdmin):
     list_display=['name','description','sizes','image','stock','Category','brand','price','review']
